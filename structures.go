@@ -60,7 +60,6 @@ type driver struct {
 }
 
 func main() {
-	//fmt.Printf("Hello, world!\n")
 	var (
 		teacher1 = schoolTeacher{
 			basics: worker{
