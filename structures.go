@@ -67,36 +67,74 @@ func (wor *worker) getSalary() {
 	fmt.Printf("%s %s earns %.2f$ per hour and works %d hours per week. \n", wor.personInfo.name, wor.personInfo.surname, wor.salaryPerHour, wor.workingHoursPerWeek)
 }
 
-func main() {
-	var (
-		teacher1 = schoolTeacher{
-			basics: &worker{
-				personInfo: &human{
-					name:    "Dale",
-					surname: "Green",
-					age:     27,
-					sex:     "male",
-					email:   "dalegreen@gmail.com",
-					phone:   "123-45-67",
-				},
-				education:           "high",
-				yearsOfExperience:   3,
-				onVacation:          false,
-				company:             "Government",
-				workingPost:         "Teacher in high school",
-				salaryPerHour:       20.0,
-				workingHoursPerWeek: 8,
-			},
-			Classes:    forms[8:12],
-			Subject:    "Science",
-			ClassTrips: false,
-		}
-	)
-	var p *schoolTeacher = &teacher1
+func declaration(people []*worker) {
+	fmt.Printf("We declared such people:\n")
+	for _, v := range people {
+		fmt.Printf("%s %s \n", v.personInfo.name, v.personInfo.surname)
+	}
+}
 
-	fmt.Printf("We declared such people: " + p.basics.personInfo.name + " " + p.basics.personInfo.surname + "\n")
-	teacher1.basics.personInfo.getContact()
-	teacher1.basics.getSalary()
+func contactsAndSalary(people []*worker) {
+	for _, v := range people {
+		v.personInfo.getContact()
+		v.getSalary()
+	}
+}
+
+func main() {
+
+	var teacher1 = schoolTeacher{
+		basics: &worker{
+			personInfo: &human{
+				name:    "Dale",
+				surname: "Green",
+				age:     27,
+				sex:     "male",
+				email:   "dalegreen@gmail.com",
+				phone:   "123-45-67",
+			},
+			education:           "high",
+			yearsOfExperience:   3,
+			onVacation:          false,
+			company:             "Government",
+			workingPost:         "Teacher in high school",
+			salaryPerHour:       15.0,
+			workingHoursPerWeek: 8,
+		},
+		Classes:    forms[8:12],
+		Subject:    "Science",
+		ClassTrips: false,
+	}
+
+	var programmer1 = programmer{
+		basics: &worker{
+			personInfo: &human{
+				name:    "Ann",
+				surname: "Purple",
+				age:     23,
+				sex:     "female",
+				email:   "ann_purple@gmail.com",
+				phone:   "765-43-21",
+			},
+			education:           "high",
+			yearsOfExperience:   2,
+			onVacation:          false,
+			company:             "Comp&CO",
+			workingPost:         "Programmer",
+			salaryPerHour:       15.0,
+			workingHoursPerWeek: 8,
+		},
+		Post:                "Junior",
+		Languages:           []string{"C#", "C++", "Java", "Python"},
+		FreelanceExperience: true,
+	}
+
+	workers := make([]*worker, 0, 0)
+	var t1 *schoolTeacher = &teacher1
+	var p1 *programmer = &programmer1
+	workers = append(workers, t1.basics, p1.basics)
+	declaration(workers)
+	contactsAndSalary(workers)
 
 	// Как вызвать панику при помощи указателей - обратиться к полям объявленной, но не инициализированной структуры (через указатель)
 	//var pPanic *schoolTeacher
