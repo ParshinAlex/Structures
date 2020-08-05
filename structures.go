@@ -4,6 +4,8 @@ import "fmt"
 
 var forms = [12]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 
+// Structures
+
 type human struct {
 	name    string
 	surname string
@@ -59,29 +61,54 @@ type driver struct {
 	ForeignCountriesVisas string `json:"visas,omitempty"`
 }
 
-func (hum *human) getContact() {
-	fmt.Printf("Contacts of %s %s: email - %s, phone - %s. \n", hum.name, hum.surname, hum.email, hum.phone)
+// Interface zone
+
+type workerI interface {
+	workPostContact()
 }
 
-func (wor *worker) getSalary() {
-	fmt.Printf("%s %s earns %.2f$ per hour and works %d hours per week. \n", wor.personInfo.name, wor.personInfo.surname, wor.salaryPerHour, wor.workingHoursPerWeek)
+func getWorkPostContact(w workerI) {
+	w.workPostContact()
 }
 
-func declaration(people []*worker) {
-	fmt.Printf("We declared such people:\n")
-	for _, v := range people {
-		fmt.Printf("%s %s \n", v.personInfo.name, v.personInfo.surname)
+func (p schoolTeacher) workPostContact() {
+	fmt.Printf("Worker %s %s: work - %s, subject - %s, contacts: email - %s, phone - %s. \n", p.basics.personInfo.name,
+		p.basics.personInfo.surname, p.basics.workingPost, p.Subject, p.basics.personInfo.email, p.basics.personInfo.phone)
+}
+
+func (p programmer) workPostContact() {
+	fmt.Printf("Worker %s %s: work - %s, post - %s, contacts: email - %s, phone - %s. \n", p.basics.personInfo.name,
+		p.basics.personInfo.surname, p.basics.workingPost, p.Post, p.basics.personInfo.email, p.basics.personInfo.phone)
+}
+
+func (p footballer) workPostContact() {
+	fmt.Printf("Worker %s %s: work - %s, position - %s, contacts: email - %s, phone - %s. \n", p.basics.personInfo.name,
+		p.basics.personInfo.surname, p.basics.workingPost, p.PlayPosition, p.basics.personInfo.email, p.basics.personInfo.phone)
+}
+
+func (p doctor) workPostContact() {
+	fmt.Printf("Worker %s %s: work - %s, license - %s, contacts: email - %s, phone - %s. \n", p.basics.personInfo.name,
+		p.basics.personInfo.surname, p.basics.workingPost, p.License, p.basics.personInfo.email, p.basics.personInfo.phone)
+}
+
+func (p driver) workPostContact() {
+	fmt.Printf("Worker %s %s: work - %s, region - %s, contacts: email - %s, phone - %s. \n", p.basics.personInfo.name,
+		p.basics.personInfo.surname, p.basics.workingPost, p.Region, p.basics.personInfo.email, p.basics.personInfo.phone)
+}
+
+// Cache zone
+
+func printValuesOfCache(m map[string]workerI) {
+	for _, v := range m {
+		fmt.Printf("%T\n", v)
 	}
 }
 
-func contactsAndSalary(people []*worker) {
-	for _, v := range people {
-		v.personInfo.getContact()
-		v.getSalary()
-	}
-}
+// Main zone
 
 func main() {
+
+	// Variables
 
 	var teacher1 = schoolTeacher{
 		basics: &worker{
@@ -99,7 +126,7 @@ func main() {
 			company:             "Government",
 			workingPost:         "Teacher in high school",
 			salaryPerHour:       15.0,
-			workingHoursPerWeek: 8,
+			workingHoursPerWeek: 40,
 		},
 		Classes:    forms[8:12],
 		Subject:    "Science",
@@ -122,22 +149,53 @@ func main() {
 			company:             "Comp&CO",
 			workingPost:         "Programmer",
 			salaryPerHour:       15.0,
-			workingHoursPerWeek: 8,
+			workingHoursPerWeek: 40,
 		},
 		Post:                "Junior",
 		Languages:           []string{"C#", "C++", "Java", "Python"},
 		FreelanceExperience: true,
 	}
 
-	workers := make([]*worker, 0, 0)
+	var footballer1 = footballer{
+		basics: &worker{
+			personInfo: &human{
+				name:    "Rick",
+				surname: "Black",
+				age:     19,
+				sex:     "male",
+				email:   "rick_black@gmail.com",
+				phone:   "111-22-33",
+			},
+			education:           "high school",
+			yearsOfExperience:   1,
+			onVacation:          true,
+			company:             "Atletico",
+			workingPost:         "Reserve Footballer",
+			salaryPerHour:       10,
+			workingHoursPerWeek: 20,
+		},
+		PlayPosition:     "Defender",
+		League:           "Junior",
+		MonthsOfContract: 6,
+	}
+
+	// Objects
+
 	var t1 *schoolTeacher = &teacher1
 	var p1 *programmer = &programmer1
-	workers = append(workers, t1.basics, p1.basics)
-	declaration(workers)
-	contactsAndSalary(workers)
+	var f1 *footballer = &footballer1
 
-	// Как вызвать панику при помощи указателей - обратиться к полям объявленной, но не инициализированной структуры (через указатель)
-	//var pPanic *schoolTeacher
-	//fmt.Printf("We declared such people: " + pPanic.basics.personInfo.name + " " + pPanic.basics.personInfo.surname)
+	// Creating and using cache
+
+	workers := make(map[string]workerI)
+	workers["teacher1"] = t1
+	workers["programmer1"] = p1
+	workers["footballer1"] = f1
+
+	for _, v := range workers {
+		getWorkPostContact(v)
+	}
+
+	printValuesOfCache(workers)
 
 }
